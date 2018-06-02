@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Blog Main Layout</title>
+	
+	<link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />	
+	<link href='https://fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css' />
+<head>
+	<title>List Posts</title>
+</head>
+
+<body>
+<div class="container">
+  		 
+		<nav class="navbar navbar-default">
+		    <div class="container-fluid">
+		        <div class="navbar-header">
+		            <a class="navbar-brand" href="/">My Movies</a>
+		        </div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				    <ul class="nav navbar-nav">
+				        <li class="" th:class="${controllerName == 'Home'} ? 'dropdown active' : 'dropdown'"><a href="/">Home</a></li>
+				        <li class="dropdown" th:class="${controllerName == 'Post'} ? 'dropdown active' : 'dropdown'">
+				            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Posts <span class="caret"></span></a>
+				            <ul class="dropdown-menu">
+				                <li><a href="/posts/list">List</a></li>
+				            </ul>
+				        </li>
+				        
+						<li class="dropdown" th:class="${controllerName == 'AdminPost'} ? 'dropdown active' : 'dropdown'" sec:authorize="hasRole('ROLE_ADMIN')">
+				            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+				            <ul class="dropdown-menu">
+				                <li><a href="/admin/posts/create">Create Posts</a></li>
+				                <li><a href="/admin/list">View Post</a></li>					                
+				            </ul>
+				        </li>					        
+				    </ul>
+				  <div class="navbar-text navbar-right">
+			            Welcome <span sec:authentication="name">Guest</span> | 
+				    	<form sec:authorize="isAuthenticated()" id="frmlogout" th:action="@{/logout}" method="post" class="form-inline">
+				    		<a href="javascript:{}" onclick="document.getElementById('frmlogout').submit(); return false;">Logout</a>
+				    	</form>
+				    	<a sec:authorize="!isAuthenticated()" th:href="@{/login}"> Login</a>
+				    </div> 
+				</div>
+		    </div>
+		</nav>
+		
+		<div layout:fragment="content">
+
+		  <article th:each="post : ${posts}">
+			<header>
+            <h1 th:text="${post.title}">title</h1>
+            <p th:text="${#calendars.format(post.postedOn,'M/dd/yyyy hh:mm:ss a')}">postedOn</p>
+        </header>
+        <section th:utext="${post.teaser}">
+				teaser
+			</section>
+          
+		<br/><br/>
+		<footer>
+				<a th:href="@{/posts/} + ${post.id}">Read More</a>
+				<address>
+					Posted By <a th:href="|mailto:${post.author.email}|"> <span th:text="|${post.author.firstName} ${post.author.lastName}|">author</span></a>
+				</address>
+			</footer>
+			
+			</article>
+			<hr/>
+		</div>
+	
+	</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" ></script>
+
+</body>
+</html>
